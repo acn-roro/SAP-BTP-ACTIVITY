@@ -41,7 +41,7 @@ entity SUPPLIERS {
 
 
 entity CATEGORIES {
-    key CategoryID: String @description: 'Category ID';
+    CategoryID: String @description: 'Category ID';
     CategoryName: String @description: 'Category Name';
     Description: String @description: 'Category Description';
 };
