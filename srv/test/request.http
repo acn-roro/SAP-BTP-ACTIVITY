@@ -1,0 +1,66 @@
+
+@baseUrl = http://localhost:4004/odata/v4
+
+### 1
+#POST {{baseUrl}}/catalog/LogBooks HTTP/1.1
+#Content-Type: application/json
+
+#{
+#  "borrowerName": "Hello",
+#  "bookTitle": "Clean Code",
+#  "authorName": "Robert C. Martin",
+#  "readDate": "{{$datetime 'YYYY-MM-DD'}}"
+#}
+
+### 2
+#POST {{baseUrl}}/catalog/LogBooks HTTP/1.1
+#Content-Type: application/json
+
+#{
+#  "borrowerName": "B-1002",
+#  "bookTitle": "The Pragmatic Programmer",
+#  "authorName": "Andrew Hunt",
+#  "readDate": "{{$datetime 'YYYY-MM-DD'}}"
+#}
+
+### 3
+#POST {{baseUrl}}/catalog/LogBooks HTTP/1.1
+#Content-Type: application/json
+
+#{
+#  "borrowerName": "B-1003",
+#  "bookTitle": "Design Patterns",
+#  "authorName": "Gamma et al.",
+#  "readDate": "{{$datetime 'YYYY-MM-DD'}}"
+#}
+
+### 4
+#POST {{baseUrl}}/catalog/LogBooks HTTP/1.1
+#Content-Type: application/json
+
+#{
+#  "borrowerName": "Josh",
+#  "bookTitle": "Refactoring",
+#  "authorName": "Martin Fowler",
+#  "readDate": "{{$datetime 'YYYY-MM-DD'}}"
+#}
+
+### 5
+#POST {{baseUrl}}/catalog/LogBooks HTTP/1.1
+#Content-Type: application/json
+
+#{
+# "borrowerName": "Karina",
+#  "bookTitle": "Programming",
+#  "authorName": "Rochelle Solinap",
+#  "readDate": "{{$datetime 'YYYY-MM-DD'}}"
+#}
+
+# Fetch all logs# Fetch all logs for a borrower (descending by borrowerName)
+
+POST http://localhost:4004/odata/v4/catalog/FetchBooks HTTP/1.1
+Content-Type: application/json
+
+{
+  "borrowerName": "Karina"
+}
