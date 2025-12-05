@@ -20,16 +20,11 @@ module.exports = async (srv) => {
     const isNotFound = /No books found/i.test(err.message);
     return req.reject(isNotFound ? 404 : 400, err.message);
   }
-});
-}
+})
 
-
-
-module.exports = (srv) => {
-  srv.on('insertTBProducts', async (req) => {
-    // Start a transaction scoped to this request
+srv.on('insertTBProducts', async (req) => {
     const tx = cds.transaction(req);
-
+    
     try {
       const response = await executeHttpRequest(
         { destinationName: 'northwind' },
@@ -41,47 +36,44 @@ module.exports = (srv) => {
       );
 
       // OData v3: { d: { results: [...] } }, v4: { value: [...] }
-      const products =
-        response?.data?.d?.results ??
-        response?.data?.value ??
-        response?.data;
-
+      const products = response?.data?.d?.results ?? response?.data?.value ?? response?.data;
       if (!Array.isArray(products) || products.length === 0) {
-        return { MESSAGE: 'No products found in response.' };
+        return 'No products found in response.';
       }
 
-      // Insert each product using a for...of loop
+      // Get CAP entity definitions under alias "my"
+      const { PRODUCTS } = cds.entities('my');
+
       for (const p of products) {
         await tx.run(
           INSERT.into('ACTIVITY1_PRODUCTS').entries({
             ProductID: String(p.ProductID),
             ProductName: String(p.ProductName),
             SupplierID: String(p.SupplierID),
-            CategoryID: String (p.CategoryID),
+            CategoryID: String(p.CategoryID),
             QuantityPerUnit: String(p.QuantityPerUnit),
             UnitPrice: String(p.UnitPrice),
-            UnitsInStock: Number(p.UnitsInStock) ,
+            UnitsInStock: Number(p.UnitsInStock),
             UnitsOnOrder: Number(p.UnitsOnOrder),
             ReorderLevel: Number(p.ReorderLevel),
             Discontinued: String(p.Discontinued)
-            })
+          })
         );
       }
 
       await tx.commit();
-      return { MESSAGE: `Inserted ${products.length} product(s).` };
+      return `Inserted ${products.length} product(s).`;
     } catch (error) {
       await tx.rollback(error);
       req.warn(error.message || String(error));
-      return { MESSAGE: error.message || String(error) };
+      // Match action signature: return a String
+      return error.message || String(error);
     }
-   });
+  });
 
-
-module.exports = (srv) => {
-srv.on('insertTBSuppliers', async (req) => {
+  /** Insert Suppliers from Northwind: returns String */
+  srv.on('insertTBSuppliers', async (req) => {
     const tx = cds.transaction(req);
-
     try {
       const response = await executeHttpRequest(
         { destinationName: 'northwind' },
@@ -91,18 +83,14 @@ srv.on('insertTBSuppliers', async (req) => {
           headers: { Accept: 'application/json' },
         }
       );
-      
-// OData v3: { d: { results: [...] } }, v4: { value: [...] }
-      const suppliers =
-        response?.data?.d?.results ??
-        response?.data?.value ??
-        response?.data;
 
+      const suppliers = response?.data?.d?.results ?? response?.data?.value ?? response?.data;
       if (!Array.isArray(suppliers) || suppliers.length === 0) {
-        return { MESSAGE: 'No suppliers found in response.'};
+        return 'No suppliers found in response.';
       }
-      
-      // Insert each supplier using a for...of loop
+
+      const { SUPPLIERS } = cds.entities('my');
+
       for (const s of suppliers) {
         await tx.run(
           INSERT.into('ACTIVITY1_SUPPLIERS').entries({
@@ -117,46 +105,58 @@ srv.on('insertTBSuppliers', async (req) => {
             Country: String(s.Country),
             Phone: String(s.Phone),
             Fax: String(s.Fax),
-            HomePage: String(s.HomePage),
+            HomePage: String(s.HomePage)
           })
         );
       }
+
       await tx.commit();
-      return { MESSAGE: `Inserted ${suppliers.length} supplier(s).` };
+      return `Inserted ${suppliers.length} supplier(s).`;
     } catch (error) {
       await tx.rollback(error);
       req.warn(error.message || String(error));
-      return { MESSAGE: error.message || String(error) };
+      return error.message || String(error);
     }
   });
-};
-}
 
-
-
-module.exports = (srv) => {
-
-  // Match your action/function name in service.cds, e.g.
-  // function fetchProducts() returns array of Products;
+  /** Insert Categories from Northwind: returns String */
   srv.on('insertTBCategories', async (req) => {
+    const tx = cds.transaction(req);
     try {
       const response = await executeHttpRequest(
         { destinationName: 'northwind' },
         {
           method: 'GET',
           url: 'https://services.odata.org/V3/Northwind/Northwind.svc/Categories?$format=json',
-          headers: { 'Accept': 'application/json' }
+          headers: { Accept: 'application/json' },
         }
       );
 
-      // OData v3: { d: { results: [...] } }
-      const data = response?.data?.d?.results ?? response?.data?.value ?? response?.data;
-      return data;
+      const categories = response?.data?.d?.results ?? response?.data?.value ?? response?.data;
+      if (!Array.isArray(categories) || categories.length === 0) {
+        return 'No categories found in response.';
+      }
+
+      const { CATEGORIES } = cds.entities('my');
+
+      for (const c of categories) {
+        await tx.run(
+          INSERT.into('ACTIVITY1_CATEGORIES').entries({
+            CategoryID: String(c.CategoryID),
+            CategoryName: String(c.CategoryName),
+            Description: String(c.Description)
+          })
+        );
+      }
+
+      await tx.commit();
+      return `Inserted ${categories.length} category(ies).`;
     } catch (error) {
+      await tx.rollback(error);
       req.warn(error.message || String(error));
-      return { MESSAGE: error.message || String(error) };
+      return error.message || String(error);
        }
   });
 
-
 }
+  
