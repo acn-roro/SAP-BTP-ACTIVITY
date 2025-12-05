@@ -1,37 +1,23 @@
 
 const cds = require('@sap/cds');
-const { orderBy } = require('@sap/cds/lib/ql/cds-ql');
 
-/**
- * FetchBooks
- * - Retrieves records from ACTIVITY1_BOOKS table
- * - Accepts borrowerID as parameter
- * - Filters by borrowerID and sorts in descending order
- * - Validates if no books fetched for the borrower
- * - Returns list of rows (you can map/shape if needed)
- */
-async function FetchBooks({ borrowerName}) {
-  try {
-    
-    // Build query similar to your screenshot style
-    const data = SELECT.from('ACTIVITY1_BOOKS');
+async function FetchBooks({ borrowerName }, req) {
+  if (!borrowerName) throw new Error('Missing required parameter: borrowerName.');
 
-    // Return the list directly (per your requirement to return list of logs)
-    return {
-      Process: 'FetchBooks',
-      BorrowerName: row.BORROWERNAME,
-      BookTitle: row.BOOKTITLE,
-      AuthorName: row.AUTHORNAME,
-      ReadDate: row.READDATA
-    };
+  const { Books } = cds.entities('ACTIVITY1_BOOKS');
+  const tx = cds.transaction(req);
 
-  } catch (error) {
-    // Match the error style in your screenshot
-    return { MESSAGE: error.message };
-  }
+  const rows = await tx.run(
+    SELECT.from('ACTIVITY1_BOOKS')
+      .where({ borrowerName })
+      .orderBy({borrowerName: 'desc'}) // typical for logs: latest first
+  );
+
+  if (!rows?.length) throw new Error(`No books found for borrower "${borrowerName}".`);
+  return rows; // matches 'many Books'
 }
+
 
 module.exports = {
   FetchBooks
-};
-
+}

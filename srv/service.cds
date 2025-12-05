@@ -10,7 +10,7 @@ service CatalogService{
         readDate   : Date )
         returns String;  
         
-    action FetchBooks(borrowerName : String)
+    action FetchBooks(borrowerName : String) returns many Books;
    
 };
  

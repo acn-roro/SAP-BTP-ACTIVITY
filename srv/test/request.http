@@ -58,7 +58,8 @@
 
 # Fetch all logs# Fetch all logs for a borrower (descending by borrowerName)
 
-POST http://localhost:4004/odata/v4/catalog/FetchBooks HTTP/1.1
+
+POST http://localhost:4004/odata/v4/catalog/FetchBooks
 Content-Type: application/json
 
 {
