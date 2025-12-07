@@ -158,5 +158,53 @@ srv.on('insertTBProducts', async (req) => {
        }
   });
 
-}
-  
+
+  srv.on('GetCatalog', async (req) => {
+    const tx = cds.transaction(req);
+    // OPTIONAL: const { SELECT } = cds; (SELECT is available via cds)
+    try {
+      // Use the actual namespace of the compiled model:
+      const { PRODUCTS, SUPPLIERS, CATEGORIES } = cds.entities('activity1');
+
+      // Safety check (helps during dev):
+      if (!PRODUCTS || !SUPPLIERS || !CATEGORIES) {
+        return req.reject(500, 'Entities not found. Check model namespace (activity1 vs my).');
+      }
+
+      const products   = await tx.run(SELECT.from(PRODUCTS));
+      const suppliers  = await tx.run(SELECT.from(SUPPLIERS));
+      const categories = await tx.run(SELECT.from(CATEGORIES));
+
+      const supplierById = new Map(suppliers.map(s => [String(s.SupplierID), s]));
+      const categoryById = new Map(categories.map(c => [String(c.CategoryID), c]));
+
+      const result = products.map(p => {
+        const s = supplierById.get(String(p.SupplierID));
+        const c = categoryById.get(String(p.CategoryID));
+        return {
+          ProductID:    p?.ProductID ?? null,
+          ProductName:  p?.ProductName ?? null,
+          SupplierID:   p?.SupplierID ?? null,
+          CompanyName:  s?.CompanyName ?? null,
+          Address:      s?.Address ?? null,
+          City:         s?.City ?? null,
+          Region:       s?.Region ?? null,
+          CategoryName: c?.CategoryName ?? null,
+          Description:  c?.Description ?? null,
+        };
+      });
+
+      return result; // returns many Catalog entries
+    } catch (error) {
+      return req.reject(500, error.message || 'Failed to fetch catalog.');
+    }
+  });
+};
+
+
+
+
+
+
+
+

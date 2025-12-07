@@ -19,19 +19,23 @@ service CatalogService{
     action insertTBSuppliers() returns String;
     action insertTBCategories() returns String;
 
-    
-// Function: returns combined data in one call  
-    function fetchCatalog() returns many {
-        ProductID    : Integer;
-        ProductName  : String;
-        SupplierID   : Integer;
-        CompanyName  : String;
-        Address      : String;
-        City         : String;
-        Region       : String;
-        CategoryName : String;
-        Description  : String;
+    entity Catalog as select from my.PRODUCTS as p
+    left join my.SUPPLIERS as s on s.SupplierID = p.SupplierID
+    left join my.CATEGORIES as c on c.CategoryID = p.CategoryID
+  {
+    p.ProductID       as ProductID,
+    p.ProductName     as ProductName,
+    p.SupplierID      as SupplierID,
+    s.CompanyName     as CompanyName,
+    s.Address         as Address,
+    s.City            as City,
+    s.Region          as Region,
+    c.CategoryName    as CategoryName,
+    c.Description     as Description
   };
+
+    function GetCatalog() returns many Catalog;
+
 };
  
 
