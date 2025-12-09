@@ -88,9 +88,7 @@ srv.on('insertTBProducts', async (req) => {
       if (!Array.isArray(suppliers) || suppliers.length === 0) {
         return 'No suppliers found in response.';
       }
-
-      const { SUPPLIERS } = cds.entities('my');
-
+      
       for (const s of suppliers) {
         await tx.run(
           INSERT.into('ACTIVITY1_SUPPLIERS').entries({
