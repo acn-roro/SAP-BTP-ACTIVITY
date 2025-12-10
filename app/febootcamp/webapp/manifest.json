@@ -48,7 +48,8 @@
       "minUI5Version": "1.143.0",
       "libs": {
         "sap.m": {},
-        "sap.ui.core": {}
+        "sap.ui.core": {},
+        "sap.viz": {}
       }
     },
     "contentDensities": {
@@ -98,12 +99,34 @@
           "target": [
             "TargetHome"
           ]
+        },
+        {
+          "name": "RoutePage1",
+          "pattern": "page1",
+          "target": [
+            "TargetPage1"
+          ]
+        },
+        {
+          "name": "RoutePage2",
+          "pattern": "page2",
+          "target": [
+            "TargetPage2"
+          ]
         }
       ],
       "targets": {
         "TargetHome": {
           "id": "Home",
           "name": "Home"
+        },
+        "TargetPage1": {
+          "id": "Page1",
+          "name": "Page1"
+        },
+        "TargetPage2": {
+          "id": "Page2",
+          "name": "Page2"
         }
       }
     },

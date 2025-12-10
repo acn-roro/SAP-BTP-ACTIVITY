@@ -1,0 +1,14 @@
+
+<mvc:View
+    controllerName="febootcamp.controller.Page2"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m">
+    
+    <Page id="page2" title="Page 2" showNavButton="true"  navButtonPress="onNavBack">
+        <content>
+            <Title id="linktopage" text="Welcome to Page 2!" class="page2title"/>
+        </content>
+    </Page>
+
+</mvc:View>
+

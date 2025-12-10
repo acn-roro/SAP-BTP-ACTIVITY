@@ -1,0 +1,50 @@
+<mvc:View
+    controllerName="febootcamp.controller.Page1"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:viz="sap.viz.ui5.controls" 
+    xmlns:layout="sap.ui.layout"
+    xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds">
+
+    <Page id="page1" title="Page 1">
+        <content>
+          <Title id="page1title" text="Hello, Roro!" class="page1title" />
+          <Button
+					id="BadgedButton"
+					class="sapUiTinyMarginBeginEnd"
+					icon="sap-icon://paper-plane"
+					text="Click to say Hello!"
+          press="onButtonPress"/>
+          
+          <Panel id="Books" class="panelStyle" expandable="true" expanded="true" headerText="Book Chart" width="auto">
+             <VBox id="bookGraph" class='bookGraphstyle'>
+                <Label id="book1" text="{/dataset/name}" design="Bold" class='settingsLabel'></Label>
+                        <RadioButtonGroup id='datasetRadioGroup'
+                                buttons="{path: '/dataset/values'}">
+                            <buttons>
+                                <RadioButton id="bookdata1" class='settingsRadio' text="{name}" select="onDatasetSelected"/>
+                            </buttons>
+                        </RadioButtonGroup>
+                    </VBox>
+                    <VBox id="bookGraph2" class='bookGraphstyle'>
+                        <Label id="book2" text='{/series/name}' design="Bold" class='settingsLabel'></Label>
+                        <RadioButtonGroup id='seriesRadioGroup'
+                            buttons="{path: '/series/values'}" >
+                            <buttons>
+                                <RadioButton id="bookdata2" class='settingsRadio' text="{name}" select='onSeriesSelected'/>
+                            </buttons>
+                        </RadioButtonGroup>
+                    </VBox>   
+                  </Panel>  
+        </content>
+         <footer>
+            <Toolbar id="footerToolbar">
+                <Button
+                    id="nextButton"
+                    text="Click Me to go to Page 2!"
+                    press="onGoToPage2"
+                />
+            </Toolbar>
+        </footer>
+    </Page>
+</mvc:View>

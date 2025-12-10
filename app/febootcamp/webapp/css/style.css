@@ -1,1 +1,12 @@
 /* Enter your custom styles here */
+.page1title {
+  font-size: 40px; 
+  font-weight: 700;
+  margin-right: 0.75rem;
+}
+
+.page2title {
+  font-size: 40px; 
+  font-weight: 700;
+  margin-right: 0.75rem;
+}
