@@ -3,6 +3,7 @@
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
     xmlns:viz="sap.viz.ui5.controls" 
+    xmlns:viz.data="sap.viz.ui5.data"
     xmlns:layout="sap.ui.layout"
     xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds">
 
@@ -17,25 +18,32 @@
           press="onButtonPress"/>
           
           <Panel id="Books" class="panelStyle" expandable="true" expanded="true" headerText="Book Chart" width="auto">
-             <VBox id="bookGraph" class='bookGraphstyle'>
-                <Label id="book1" text="{/dataset/name}" design="Bold" class='settingsLabel'></Label>
-                        <RadioButtonGroup id='datasetRadioGroup'
-                                buttons="{path: '/dataset/values'}">
-                            <buttons>
-                                <RadioButton id="bookdata1" class='settingsRadio' text="{name}" select="onDatasetSelected"/>
-                            </buttons>
-                        </RadioButtonGroup>
-                    </VBox>
-                    <VBox id="bookGraph2" class='bookGraphstyle'>
-                        <Label id="book2" text='{/series/name}' design="Bold" class='settingsLabel'></Label>
-                        <RadioButtonGroup id='seriesRadioGroup'
-                            buttons="{path: '/series/values'}" >
-                            <buttons>
-                                <RadioButton id="bookdata2" class='settingsRadio' text="{name}" select='onSeriesSelected'/>
-                            </buttons>
-                        </RadioButtonGroup>
-                    </VBox>   
-                  </Panel>  
+          <viz:VizFrame id="idVizFrame"
+                  uiConfig="{applicationSet:'page1'}"
+                  height="300px"
+                  width="100%"
+                  vizType="column"
+                  vizProperties="{ title: { text: 'Books Data', visible: true } }">
+        <viz:dataset>
+            <viz.data:FlattenedDataset id="idVizDataset" data="{viz>/SalesData}">
+                <viz.data:dimensions>
+                    <viz.data:DimensionDefinition id="idDimMonth" name="Month" value="{viz>Month}" />
+                </viz.data:dimensions>
+                <viz.data:measures>
+                    <viz.data:MeasureDefinition id="idMeasCreatedClubs" name="Created Clubs" value="{viz>Value}" />
+                </viz.data:measures>
+            </viz.data:FlattenedDataset>
+        </viz:dataset>
+        <viz:feeds>
+            <viz.feeds:FeedItem id="idFeedValueAxis" uid="valueAxis" type="Measure" values="Created Clubs" />
+            <viz.feeds:FeedItem id="idFeedCategoryAxis" uid="categoryAxis" type="Dimension" values="Month" />
+        </viz:feeds>
+    </viz:VizFrame>
+          
+          </Panel>  
+        <Panel id="Books1" class="panelStyle" expandable="true" expanded="true" headerText="List" width="auto">
+                </Panel> 
+           
         </content>
          <footer>
             <Toolbar id="footerToolbar">
