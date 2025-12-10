@@ -3,60 +3,73 @@ import Controller from "sap/ui/core/mvc/Controller";
 import UIComponent from "sap/ui/core/UIComponent";
 import MessageBox from "sap/m/MessageBox";
 import JSONModel from "sap/ui/model/json/JSONModel";  
-import ODataModel from "sap/ui/model/odata/v2/ODataModel";
+import ODataModel from "sap/ui/model/odata/v4/ODataModel"
+import Context from "sap/ui/model/odata/v4/Context";
 
 export default class Page1 extends Controller {
+    public onNavBack(): void {
+    const router = UIComponent.getRouterFor(this);
+    router.navTo("RouteHome");
+  } 
+
+    public onGoToPage2(): void {
+    const router = UIComponent.getRouterFor(this);
+    router.navTo("RoutePage2");
+  }
+
+    public onButtonPress(): void {
+   
+        MessageBox.show("Nice to meet you!", {
+            title: "Hello World",
+            icon: MessageBox.Icon.NONE,  
+            actions: [MessageBox.Action.OK],
+        });
+    }
 
    public onInit(): void{
-       
-        this.getView()?.setModel(new JSONModel());
-        const oModel = this.getOwnerComponent()?.getModel() as  ODataModel;
-        this.sUrl  = oModel.getServiceUrl();
-       
+    const oData = {
+            mockData: [
+                { Category: "A", Value: 10 },
+                { Category: "B", Value: 20 },
+                { Category: "C", Value: 30 }
+            ]
+        };
+        const oModel = new JSONModel(oData);
+        this.getView()!.setModel(oModel);
         this.getBooks();
     }
+    
  
-    public onInit(): void{
-        const oModel = this.getOwnerComponent()?.getModel() as  ODataModel;
-        this.sUrl  = oModel.getServiceUrl();
-        console.log("hello");
-        this.getBooks();
+      public async getBooks(): Promise<any> {
+    const oModel = this.getOwnerComponent()!.getModel() as ODataModel;
+ 
+    if (!oModel) {
+      console.error("Model 'mainService' not found. Check manifest.json.");
+      return;
     }
  
-    public async getBooks() {
-        try {
-            console.log("hello");
+    const oBinding = oModel.bindList("/Books");
  
-            const response = await fetch(this.sUrl + "Books", {
-                method: "GET",
-                headers: { "Content-Type": "application/json" }
-            });
+    try {
+      // Explicitly request contexts: start at 0, fetch 100 rows
+      const aContexts: Context[] = await oBinding.getContexts(0, 100);
  
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
+      const aData = aContexts.map(ctx => ctx.getObject());
+      const bookdetails = aData.map(Books => ({
+        name: ooks.ProductName,
+        units: product.UnitsInStock
+      }));
  
-            const data = await response.json();
-            console.log(data);
+      const oView = this.getView();
+      if (oView) {
+          oView.setModel(new JSONModel({ Products: productDetail }));
+      }
  
-            interface Books {
-                BorrowerName: string;
-                BookTitle: number;
-            }
+      console.log(productDetail)
  
-            const dataArray = data.value as Books[];
- 
-            const mapped = dataArray.map(item => ({
-                borrowerName: item.BorrowerName,
-                bookTitle: item.UnitsInStock
-            }));
- 
-            const oView = this.getView();
-            if (oView) {
-                oView.setModel(new JSONModel({ Products: mapped }));
-            }
-        } catch (error) {
-            console.error("Error fetching Products:", error);
-        }
+    } catch (err) {
+      console.error("Error fetching products:", err);
     }
   }
+ 
+}
