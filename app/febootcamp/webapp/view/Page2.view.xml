@@ -6,7 +6,7 @@
     
     <Page id="page2" title="Page 2" showNavButton="true"  navButtonPress="onNavBack">
         <content>
-            <Title id="linktopage" text="Welcome to Page 2!" class="page2title"/>
+            <Title id="topage2" text="Welcome to Page 2!" class="page2title"/>
         </content>
     </Page>
 

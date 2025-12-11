@@ -27,20 +27,12 @@ export default class Page1 extends Controller {
     }
 
    public onInit(): void{
-    const oData = {
-            mockData: [
-                { Category: "A", Value: 10 },
-                { Category: "B", Value: 20 },
-                { Category: "C", Value: 30 }
-            ]
-        };
+    const oData = {};
         const oModel = new JSONModel(oData);
         this.getView()!.setModel(oModel);
         this.getBooks();
     }
-    
- 
-      public async getBooks(): Promise<any> {
+    public async getBooks(): Promise<any> {
     const oModel = this.getOwnerComponent()!.getModel() as ODataModel;
  
     if (!oModel) {
@@ -48,24 +40,25 @@ export default class Page1 extends Controller {
       return;
     }
  
-    const oBinding = oModel.bindList("/Books");
+    const oBinding = oModel.bindList("/Products");
  
     try {
       // Explicitly request contexts: start at 0, fetch 100 rows
-      const aContexts: Context[] = await oBinding.getContexts(0, 100);
+      const aContexts: Context[] = await oBinding.requestContexts(0, 100);
  
       const aData = aContexts.map(ctx => ctx.getObject());
-      const bookdetails = aData.map(Books => ({
-        name: ooks.ProductName,
-        units: product.UnitsInStock
+      const productDetails = aData.map(Products => ({
+        productName: Products.ProductName, unitsOnOrder: Products.UnitsOnOrder
       }));
  
       const oView = this.getView();
       if (oView) {
-          oView.setModel(new JSONModel({ Products: productDetail }));
+          oView.setModel(new JSONModel({ 
+            Products: productDetails 
+          }));
       }
  
-      console.log(productDetail)
+      console.log(productDetails)
  
     } catch (err) {
       console.error("Error fetching products:", err);

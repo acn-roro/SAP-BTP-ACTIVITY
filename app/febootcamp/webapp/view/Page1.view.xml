@@ -2,51 +2,61 @@
     controllerName="febootcamp.controller.Page1"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
-    xmlns:viz="sap.viz.ui5.controls" 
+    xmlns:viz="sap.viz.ui5.controls"
     xmlns:viz.data="sap.viz.ui5.data"
-    xmlns:layout="sap.ui.layout"
     xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds">
 
     <Page id="page1" title="Page 1">
         <content>
-          <Title id="page1title" text="Hello, Roro!" class="page1title" />
-          <Button
-					id="BadgedButton"
-					class="sapUiTinyMarginBeginEnd"
-					icon="sap-icon://paper-plane"
-					text="Click to say Hello!"
-          press="onButtonPress"/>
-          
-          <Panel id="Books" class="panelStyle" expandable="true" expanded="true" headerText="Book Chart" width="auto">
-          <controls:VizFrame id="idVizFrame" vizType="column" width="100%" height="400px">
-                    <controls:dataset>
-                        <!-- Bind to Products array from JSONModel -->
-                        <vizData:FlattenedDataset data="{/Books}">
-                            <vizData:dimensions>
-                                <vizData:DimensionDefinition name="Books" value="{name}"/>
-                            </vizData:dimensions>
-                            <vizData:measures>
-                                <vizData:MeasureDefinition name="Book Title" value="{title}"/>
-                            </vizData:measures>
-                        </vizData:FlattenedDataset>
-                    </controls:dataset>
-                    <controls:feeds>
-                        <viz:FeedItem uid="categoryAxis" type="Dimension" values="Books"/>
-                        <viz:FeedItem uid="valueAxis" type="Measure" values="Book Title"/>
-                    </controls:feeds>
-                </controls:VizFrame>
-          </Panel>  
-        <Panel id="Books1" class="panelStyle" expandable="true" expanded="true" headerText="List" width="auto">
-                </Panel> 
-           
+            <Title id="page1title" text="Hello, Roro!" class="page1title" />
+            <Button
+                id="BadgedButton"
+                class="sapUiTinyMarginBeginEnd"
+                icon="sap-icon://paper-plane"
+                text="Click to say Hello!"
+                press="onButtonPress"/>
+
+            <Panel id="productsData" class="panelStyle" expandable="true" expanded="true" headerText="Product Data Chart"  width="auto">
+                <viz:VizFrame id="idVizFrame" vizType="column" width="100%" height="400px"
+                    uiConfig="{ applicationSet: 'fiori' }"
+                    vizProperties="{
+                        'title': {
+                        'text': 'Products Data In Stock',
+                         'visible': true
+                        }
+                     }">
+
+                    <viz:dataset>
+                        <viz.data:FlattenedDataset data="{/Products}">
+                            <viz.data:dimensions>
+                                <viz.data:DimensionDefinition name="Product Name" value="{productName}"/>
+                            </viz.data:dimensions>
+                            <viz.data:measures>
+                                <viz.data:MeasureDefinition name="Units on Order" value="{unitsOnOrder}"/>
+                            </viz.data:measures>
+                        </viz.data:FlattenedDataset>
+                    </viz:dataset>
+
+                    <viz:feeds>
+                        <viz.feeds:FeedItem uid="categoryAxis" type="Dimension" values="Product Name"/>
+                        <viz.feeds:FeedItem uid="valueAxis" type="Measure" values="Units on Order"/>
+                    </viz:feeds>
+                </viz:VizFrame>
+            </Panel>
         </content>
-         <footer>
+        <Panel id="Products1" class="panelStyle" expandable="true" expanded="true" headerText="List"  width="auto">
+         <content>
+       <List headerText="Products" items="{path: '/Products'}">
+		<StandardListItem title="{productName}" counter="{unitsOnOrder}"/>
+       </List>
+         </content>
+         </Panel>
+        <footer>
             <Toolbar id="footerToolbar">
                 <Button
-                    id="nextButton"
+                    id="nextBtn"
                     text="Click Me to go to Page 2!"
-                    press="onGoToPage2"
-                />
+                    press="onGoToPage2"/>
             </Toolbar>
         </footer>
     </Page>

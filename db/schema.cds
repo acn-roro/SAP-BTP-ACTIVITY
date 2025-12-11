@@ -1,7 +1,6 @@
 
 namespace activity1;
 
-
 entity Books {
     key ID: UUID @description: 'Book ID';
     borrowerName: String(50) @description: 'Borrowers ID';

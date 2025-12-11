@@ -2,6 +2,9 @@
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m">
     <Page id="page" title="{i18n>title}">
-    <Button id="button" text="Hello, Roro!" press="onButtonPress" ></Button>
+    <Button
+			text="Hello, Roro!"
+			class="sapUiSmallMarginBottom"
+			press="onSuccessMessageBoxPress"/>
     </Page>
 </mvc:View>
